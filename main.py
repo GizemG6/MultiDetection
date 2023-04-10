@@ -5,18 +5,16 @@ import mysql.connector
 
 #db connection
 mydb = mysql.connector.connect(
-    host = "",
-    user = "",
-    password = ".",
-    database = ""
+    host="",
+    user="",
+    password="",
+    database=""
 )
 
 #execute query
 mycursor = mydb.cursor()
 mycursor.execute("select query")
 result = mycursor.fetchone()
-for x in result:
-    print(x)
 
 cap=cv2.VideoCapture(0)
 mycascade = cv2.CascadeClassifier('cascade/cascade.xml')
@@ -45,8 +43,7 @@ while True:
         if main.pencils.any() & result == 1 :
             mycursor.execute("update query")
             updateResult = mycursor.fetchone()
-            for i in result :
-                print(i)
+            mydb.commit()
 
         #send "Successful" once to server
         # if main.pencils.any() == True :

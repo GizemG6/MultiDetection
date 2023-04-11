@@ -107,7 +107,7 @@ while True:
                 x, y, w, h = cv2.boundingRect(contour)
                 frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 10, 255), 2)
                 cv2.putText(frame, "Gray", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 10, 255), 2)
-                mycursor.execute("update pasadvanced.grayresult set grayresult='gri'")
+                mycursor.execute("update query")
                 updateResult = mycursor.fetchone()
                 mydb.commit()
 
@@ -118,7 +118,7 @@ while True:
 
         #update
         if main.pencils.any() & result == 1 :
-            mycursor.execute("update pasadvanced.hdmiresult set hdmi1Result='change'")
+            mycursor.execute("update query")
             updateResult = mycursor.fetchone()
             mydb.commit()
 

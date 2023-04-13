@@ -59,6 +59,13 @@ class ColorDetect():
     gray_mask = cv2.dilate(gray_mask, kernel)
     res_gray = cv2.bitwise_and(frame, frame, mask=gray_mask)
 
+
+class Contours() :
+
+    contoursRed, hierarchy = cv2.findContours(ColorDetect().red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contoursWhite, hierarchy = cv2.findContours(ColorDetect.white_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contoursGray, hierarchy = cv2.findContours(ColorDetect.gray_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
 font1=cv2.FONT_HERSHEY_SIMPLEX
 
 while True:
@@ -68,15 +75,10 @@ while True:
     gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
     pencils=mycascade.detectMultiScale(gray,1.3,7)
 
-    #contours
-    contoursRed, hierarchy = cv2.findContours(ColorDetect().red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    contoursWhite, hierarchy = cv2.findContours(ColorDetect.white_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    contoursGray, hierarchy = cv2.findContours(ColorDetect.gray_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
     #control two color - red and white
-    for pic, contour in enumerate(contoursRed) :
+    for pic, contour in enumerate(Contours().contoursRed) :
         areaRed = cv2.contourArea(contour)
-        for pic, contour in enumerate(contoursWhite) :
+        for pic, contour in enumerate(Contours().contoursWhite) :
             areaWhite = cv2.contourArea(contour)
             if (areaRed > 300) & (areaWhite > 300):
                 x, y, w, h = cv2.boundingRect(contour)

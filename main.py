@@ -33,7 +33,7 @@ class ColorDetect():
     _, frame = cap.read()
     hsvFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-    red_lower = np.array([136, 87, 111], np.uint8)
+    red_lower = np.array([160, 100, 20], np.uint8)
     red_upper = np.array([180, 255, 255], np.uint8)
 
     white_lower = np.array([0, 0, 0], np.uint8)
@@ -68,6 +68,23 @@ while True:
     gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
     pencils=mycascade.detectMultiScale(gray,1.3,7)
 
+    #contours
+    contoursRed, hierarchy = cv2.findContours(ColorDetect().red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contoursWhite, hierarchy = cv2.findContours(ColorDetect.white_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contoursGray, hierarchy = cv2.findContours(ColorDetect.gray_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    #control two color - red and white
+    for pic, contour in enumerate(contoursRed) :
+        areaRed = cv2.contourArea(contour)
+        for pic, contour in enumerate(contoursWhite) :
+            areaWhite = cv2.contourArea(contour)
+            if (areaRed > 300) & (areaWhite > 300):
+                x, y, w, h = cv2.boundingRect(contour)
+                frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                cv2.putText(frame, "Color", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+                mycursor.execute("update query")
+                updateResult = mycursor.fetchone()
+                mydb.commit()
     #red
     contours, hierarchy = cv2.findContours(ColorDetect().red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -107,7 +124,7 @@ while True:
                 x, y, w, h = cv2.boundingRect(contour)
                 frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 10, 255), 2)
                 cv2.putText(frame, "Gray", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 10, 255), 2)
-                mycursor.execute("update pasadvanced.grayresult set grayresult='gri'")
+                mycursor.execute("update query")
                 updateResult = mycursor.fetchone()
                 mydb.commit()
 
@@ -118,7 +135,7 @@ while True:
 
         #update
         if main.pencils.any() & result == 1 :
-            mycursor.execute("update pasadvanced.hdmiresult set hdmi1Result='change'")
+            mycursor.execute("update query")
             updateResult = mycursor.fetchone()
             mydb.commit()
 
